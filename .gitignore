@@ -1,0 +1,15 @@
+# ignore everything
+/*
+
+# but allow following directories
+!WebPage
+!WebPage2
+!PythonOpcClient
+!PythonWebClient
+!.gitignore
+
+# ignore especially TIA project files, certificates etc.
+**/*.pem
+**/*.der
+**/*.crt
+**/*.p12
