@@ -4,7 +4,7 @@ body {
 }
 #main {
   margin: auto;
-  width: 420px;
+  width: 400px;
   display: flex;
   flex-wrap: wrap;
 }
@@ -23,7 +23,6 @@ input.button, .light{
   color: white;
   text-decoration: none;
   font-size: 36px;
-
 }
 .start {
   background-color: darkgreen;
@@ -36,7 +35,6 @@ input.button, .light{
 .light {
   background: dimgrey;
 }
-
 #motorschuetz.on {
     background: lightgreen;
 }

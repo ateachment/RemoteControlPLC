@@ -1,4 +1,4 @@
-var ankle = 0;
+var angle = 0;
 var rotationInterval;
 
 function initLights(motorschuetz, motorschutzschalter)
@@ -18,8 +18,8 @@ function initLights(motorschuetz, motorschutzschalter)
 }
 function rotateMotor(newValue)   // rotate motor
 {
-    ankle += newValue;
-    if(ankle == 200)
-        ankle == 0;
-    document.getElementById("motor.red").setAttribute("transform", "rotate(" + ankle + ",50,50)");
+    angle += newValue;
+    if(angle == 200)
+        angle == 0;
+    document.getElementById("motor.red").setAttribute("transform", "rotate(" + angle + ",50,50)");
 }
