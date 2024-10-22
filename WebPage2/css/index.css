@@ -1,0 +1,61 @@
+body {
+  background: white;
+  margin: 0;
+}
+#main {
+  margin: auto;
+  width: 420px;
+  display: flex;
+  flex-wrap: wrap;
+}
+#main>div {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  text-align: left;
+}
+
+input.button, .light{
+  height: 120px;
+  width: 120px;
+  border: 10px solid silver;
+  border-radius: 50%;
+  color: white;
+  text-decoration: none;
+  font-size: 36px;
+
+}
+.start {
+  background-color: darkgreen;
+}
+.stop {
+  background-color: darkred;
+}
+
+/* Lights */
+.light {
+  background: dimgrey;
+}
+
+#motorschuetz.on {
+    background: lightgreen;
+}
+#motorschutzschalter.on {
+    background: red;
+}
+.text, svg, .light, form{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+
+
+
+
+
+
+
+

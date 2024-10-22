@@ -1,0 +1,52 @@
+<!-- AWP_In_Variable Name='"Datenbaustein_Motorschaltung".WebStart' -->
+<!-- AWP_In_Variable Name='"Datenbaustein_Motorschaltung".WebStop' -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<meta http-equiv="refresh" content="10">  <!-- page reload every 10 sec -->
+    <title>Motorsteuerung v2</title>
+    <link rel="stylesheet" href="css/index.css">
+	<script type="text/javascript" src="js/index.js">
+	</script> 
+</head>
+<body onload="initLights( :="Motorschütz":, :="Motorschutzschalter":)">  <!-- receive AWP data --> 
+	<div id="main">
+		<div class="switch">
+			<form method="post">
+				<input hidden name='"Datenbaustein_Motorschaltung".WebStart' type="text" value="1"/>
+				<input class="button start" type="submit" value="I">
+			</form>
+		</div>
+		<div class="switch">
+			<form method="post">
+				<input hidden name='"Datenbaustein_Motorschaltung".WebStop' type="text" value="0"/>
+				<input class="button stop" type="submit" value="0">
+			</form>
+		</div>
+		<div>
+			<span class="text">Motor</span>
+		</div>
+		<div>
+			<!-- vector graphic motor -->
+			<svg height="100" width="100">         
+				<circle id="motor.red" cx="50" cy="50" r="25" stroke="#ff0033" stroke-dasharray="39.27 39.27" stroke-width="20" fill="white"></circle>
+				<circle cx="50" cy="50" r="35" stroke="black" stroke-width="2" fill="transparent"></circle>
+				<circle cx="50" cy="50" r="15" fill="black" stroke-width="0"></circle>
+			</svg>
+		</div>
+		<div>
+			<span class="text">Betrieb</span>
+		</div>
+		<div>
+			<div id="motorschuetz" class="light"></div>
+		</div>
+		<div>
+			<span class="text">Störung</span>
+		</div>
+		<div>
+			<div id="motorschutzschalter" class="light"></div>
+		</div> 
+	</div>
+</body>
+</html>
