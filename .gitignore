@@ -8,6 +8,9 @@
 !PythonWebClient
 !.gitignore
 
+# ignore python cache
+*/__pycache__/*
+
 # ignore especially TIA project files, certificates etc.
 **/*.pem
 **/*.der
