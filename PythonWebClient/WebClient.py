@@ -4,21 +4,18 @@
 import requests
 from bs4 import BeautifulSoup
 import json
-
-# Login-Daten
-username = "webUser"
-password = "Did1udhaw"
+import settings  # login data
 
 # Daten anfordern
 def requestData():
-    S7PLC.login(username, password)
+    S7PLC.login(settings.WEB_USERNAME, settings.PASSWORD)
     Motorschütz, Motorschutzschalter = S7PLC.getData()
     print("Motorschütz=" + str(Motorschütz), "Motorschutzschalter=" + str(Motorschutzschalter))
     S7PLC.logout()
 
 # Daten senden, um den Motor zu schalten
 def sendData(start, stop):
-    S7PLC.login(username, password)
+    S7PLC.login(settings.WEB_USERNAME, settings.PASSWORD)
     S7PLC.postData(start,stop)
     Motorschütz, Motorschutzschalter = S7PLC.getData()
     print("Motorschütz=" + str(Motorschütz), "Motorschutzschalter=" + str(Motorschutzschalter))
@@ -97,9 +94,4 @@ class S7ApiClient():
         print("Status Code: " + str(action.status_code))
 
 
-# url enthält den Applikationsname im TIA Portal:
-# Eigenschaften -> Webserver -> Anwenderseiten -> Applikationsname: Motorsteuerung
-
-# .io muss unter Eigenschaften -> Webserver -> Anwenderseiten -> Erweitert ->
-# Datei mit dynamischem Inhalt aufgeführt werden: .htm; .html; .io
-S7PLC = S7ApiClient('192.168.178.25', 'https://192.168.178.25/awp//Motorsteuerung//api.io', 'MiniWebCA_Cer.crt')
+S7PLC = S7ApiClient(settings.PLC_IP, settings.PLC_API_URI, settings.CERT_PATH)

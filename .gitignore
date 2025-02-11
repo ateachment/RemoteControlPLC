@@ -16,3 +16,5 @@
 **/*.der
 **/*.crt
 **/*.p12
+
+**/settings.py

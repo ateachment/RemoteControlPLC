@@ -1,11 +1,10 @@
-# modified: W. Eick 05.02.2025
+# W. Eick 05.02.2025
 
 from WebClient import *
 from tkinter import *
+import settings
 
-
-S7PLC = S7ApiClient('192.168.178.25', 'https://192.168.178.25/awp//Motorsteuerung//api.io', 'PythonWebClient/MiniWebCA_Cer.crt')
-S7PLC.login(username, password)
+S7PLC.login(settings.WEB_USERNAME, settings.PASSWORD)
 
 # Window with Tkinter
 window = Tk()
