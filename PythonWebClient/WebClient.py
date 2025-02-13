@@ -1,10 +1,10 @@
 # Source:   https://johanneskinzig.de 15.10.2020
-# modified: W. Eick 27.10.2020
+# modified: W. Eick 13.02.2025
 
 import requests
 from bs4 import BeautifulSoup
 import json
-import settings  # login data
+import settings  # login data and more
 
 # Daten anfordern
 def requestData():
@@ -52,7 +52,8 @@ class S7ApiClient():
         print("Logging in ...")
         session = requests.Session()
         payload_login = {'Login': username, 'Password': password, 'Redirection': ''}
-        response = session.post(self.url_post_login, data=payload_login, headers=self.http_headers, verify=self.s7certfile)
+        response = session.post(self.url_post_login, data=payload_login, headers=self.http_headers, 
+                                verify=self.s7certfile, proxies=settings.proxies)
         print('Status Code: ' + str(response.status_code))
         webpage_html = response.content
         
@@ -74,14 +75,15 @@ class S7ApiClient():
     def logout(self):
         payload_logout = {'Cookie': self.auth_cookie, 'Redirection': ''}
         session = requests.Session()
-        logout = session.post(self.url_post_logout, cookies=self.s7auth_cookie, headers=self.http_headers, data=payload_logout, verify=self.s7certfile)
+        logout = session.post(self.url_post_logout, cookies=self.s7auth_cookie, headers=self.http_headers, 
+                              data=payload_logout, proxies=settings.proxies, verify=self.s7certfile)
         print('Status Code: ' + str(logout.status_code))
         print('Logout Done')
 
     # Anforderung der Daten 
     def getData(self):
         session = requests.Session()
-        payload = session.get(self.url_api, cookies=self.s7auth_cookie, verify=self.s7certfile)
+        payload = session.get(self.url_api, cookies=self.s7auth_cookie, verify=self.s7certfile, proxies=settings.proxies)
         content_json = json.loads(payload.text)
         print("Empfangen: " + str(content_json))
         return content_json['Motorschütz'], content_json['Motorschutzschalter']
@@ -90,7 +92,7 @@ class S7ApiClient():
     def postData(self, start, stop):
         session = requests.Session()
         payload = {'"Datenbaustein_Motorschaltung".WebStart': str(start).lower(), '"Datenbaustein_Motorschaltung".WebStop': str(stop).lower()}
-        action = session.post(self.url_api, data=payload, cookies=self.s7auth_cookie, verify=self.s7certfile)
+        action = session.post(self.url_api, data=payload, cookies=self.s7auth_cookie, verify=self.s7certfile, proxies=settings.proxies)
         print("Status Code: " + str(action.status_code))
 
 
