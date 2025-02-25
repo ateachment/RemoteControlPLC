@@ -1,4 +1,9 @@
 from opcua import *
+import os
+
+# Setze Umgebungsvariablen für Proxy auf None, um den System-Proxy zu umgehen
+os.environ["HTTP_PROXY"] = ""
+os.environ["HTTPS_PROXY"] = ""
 
 #Benutzer verbinden
 client = Client("opc.tcp://opcUser:asdUIZFD5367478!!@192.168.178.25:4840/",timeout=8)
