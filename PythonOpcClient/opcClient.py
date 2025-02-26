@@ -1,12 +1,8 @@
 from opcua import *
-import os
-
-# Setze Umgebungsvariablen für Proxy auf None, um den System-Proxy zu umgehen
-os.environ["HTTP_PROXY"] = ""
-os.environ["HTTPS_PROXY"] = ""
+import settings
 
 #Benutzer verbinden
-client = Client("opc.tcp://opcUser:asdUIZFD5367478!!@192.168.178.25:4840/",timeout=8)
+client = Client(settings.SERVER_ADDRESS,timeout=8)
 print(client.application_uri) # urn anzeigen
 client.set_security_string("Basic256Sha256,SignAndEncrypt,PLC-25OPCUA-Client_cert.pem,PLC-25OPCUA-Client_key.pem")
 
