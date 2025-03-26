@@ -3,8 +3,7 @@ import settings
 
 #Benutzer verbinden
 client = Client(settings.SERVER_ADDRESS,timeout=8)
-print(client.application_uri) # urn anzeigen
-client.set_security_string("Basic256Sha256,SignAndEncrypt,PLC-25OPCUA-Client_cert.pem,PLC-25OPCUA-Client_key.pem")
+client.set_security_string(settings.SECURITY_STRING)
 
 try:
     client.connect()

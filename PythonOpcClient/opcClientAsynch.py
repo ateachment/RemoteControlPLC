@@ -15,7 +15,7 @@ private_key_path = Path("PLC-25OPCUA-Client_key.pem")
 
 async def task(loop):
     client = Client(settings.SERVER_ADDRESS, timeout=8)
-    await client.set_security_string("Basic256Sha256,SignAndEncrypt,PLC-25OPCUA-Client_cert.pem,PLC-25OPCUA-Client_key.pem")
+    await client.set_security_string(settings.SECURITY_STRING)
     try:
         async with client:
             objects = client.nodes.objects
