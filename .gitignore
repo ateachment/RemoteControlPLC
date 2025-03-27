@@ -2,6 +2,7 @@
 /*
 
 # but allow following directories
+!API-Gateway
 !WebPage
 !WebPage2
 !PythonOpcClient
