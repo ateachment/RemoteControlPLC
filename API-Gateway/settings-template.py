@@ -29,4 +29,4 @@ PLC_CONFIGS = {
 os.environ["HTTP_PROXY"] = ""
 os.environ["HTTPS_PROXY"] = ""
 
-DEBUG = True
+DEBUG_MODE = True
