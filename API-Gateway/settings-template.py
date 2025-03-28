@@ -28,3 +28,5 @@ PLC_CONFIGS = {
 # Set Proxy environment variables to None to bypass system proxy
 os.environ["HTTP_PROXY"] = ""
 os.environ["HTTPS_PROXY"] = ""
+
+DEBUG = True
