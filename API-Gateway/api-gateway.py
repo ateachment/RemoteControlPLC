@@ -58,7 +58,7 @@ def main():
     print(opc_clients)
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/user/login', methods=['POST'])
 def login():
     data = request.get_json()
 
@@ -78,8 +78,51 @@ def login():
             return jsonify({"status": "success", "message": f"Welcome {username}!", "token": f"{token}"}), 200
         else:
             return jsonify({"status": "error", "message": "Invalid credentials"}), 401
-    
+
+@app.route('/user/logout/<token>', methods=['DELETE'])
+def logout(token):
+    ## Check if the token exists in opc_clients
+    for i in range(len(opc_clients)):
+        loggedON = True
+        if token == opc_clients[i][3]:
+            loggedON = False
+            opc_clients[i][3] = -1    # put invalid token in opc client list
+            print(opc_clients)
+        if loggedON == False:
+            return jsonify({"status": "success", "message": f"Byebye opcUser!"}), 200
+        else:
+            return jsonify({"status": "error", "message": "Invalid token"}), 403
+
+@app.route('/info/<token>', methods=['GET'])
+def info(token):  
+    ## Check if the token exists in opc_clients
+    user_opc_clients = []
+    for opc_client in opc_clients:
+        if token == opc_client[3]:
+            user_opc_clients.append([opc_client[1],opc_client[2]])   # add opc_client to list
+        if len(user_opc_clients) > 0:
+            return jsonify({"status": "success", "opc_clients": f"{user_opc_clients}"}), 200
+        else:
+            return jsonify({"status": "error", "message": "Invalid token"}), 403
+
+@app.route('/info/<user_opc_clients>/<token>', methods=['GET'])
+def info(user_opc_clients,token):  
+    ## Check if the token exists in opc_clients
+    user_opc_clients = []
+    for opc_client in opc_clients:
+        if token == opc_client[3] and opc_client[1] in user_opc_clients and opc_client[2] == "online":
+
+            
+            
+            
+            user_opc_clients.append([opc_client[1],opc_client[2]])
+        if len(user_opc_clients) > 0:
+            return jsonify({"status": "success", "opc_clients": f"{user_opc_clients}"}), 200
+        else:
+            return jsonify({"status": "error", "message": "Invalid token"}), 403
+
+
 if __name__ == "__main__":
     main()
-    app.run(port=5000, debug=True)
+    app.run(port=5000, debug=False)
     print(opc_clients)

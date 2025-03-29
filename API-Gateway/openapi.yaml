@@ -15,7 +15,7 @@ tags:
   - name: user
     description: Operations about user
 paths:
-  /login:
+  /user/login:
     post:
       tags:
         - user
@@ -75,23 +75,28 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /logout:
-    get:
+  
+  /user/{token}:
+    delete:
       tags:
         - user
-      summary: Logs out current logged in user session.
-      description: Log user out of the system.
+      summary: Logs out current logged in user
+      description: ''
       operationId: logoutUser
-      parameters: []
+      parameters: 
+      - name: token
+        in: path
+        description: Token that has to be deleted
+        required: true
+        schema:
+          $ref: '#/components/schemas/Token'
       responses:
         '200':
-          description: successful operation
-        default:
-          description: Unexpected error
+          description: Logout sucessful
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/InvalidToken'
   
     
 components:
