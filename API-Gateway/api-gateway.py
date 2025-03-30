@@ -31,7 +31,7 @@ def generateToken():
 
 opc_clients = []
 
-async def connect_plcs(loop):
+async def task_connect_plcs(loop):
     for opcUser in settings.PLC_CONFIGS['opcUsers']:
         for plc in opcUser['plcs']:
             status = "offline"
@@ -50,12 +50,35 @@ async def connect_plcs(loop):
                 opc_clients.append([opcUser['username:password'], client, status, -1])   # i.e. ['opcUser:opcUser123', Client(opc.tcp://192.168.178.25:4840/), 'online', -1]
             
 
-def main():
+def connect_plcs():
     loop = asyncio.get_event_loop()
     loop.set_debug(True)
-    loop.run_until_complete(connect_plcs(loop))
+    loop.run_until_complete(task_connect_plcs(loop))
     loop.close()
     print(opc_clients)
+
+async def task_read_plc(loop,opc_client):
+    try:
+        async with opc_client:
+            objects = opc_client.nodes.objects
+            Serverschnittstelle_1 = await objects.get_child("/3:ServerInterfaces/4:Server-Schnittstelle_1")
+            Motorschuetz = await Serverschnittstelle_1.get_child("/4:Motorschütz")
+            Motorschutzschalter = await Serverschnittstelle_1.get_child("/4:Motorschutzschalter")
+            return (await Motorschuetz.get_value(), await Motorschutzschalter.get_value())
+    except ua.UaError as exp:
+        _logger.error(exp)
+  
+def read_plc(opc_client):
+    info_plc = -1,-1
+    loop = asyncio.get_event_loop()
+    loop.set_debug(True)
+    loop.run_until_complete(info_plc = task_read_plc(loop,opc_client))
+    loop.close()
+    print(info_plc)
+    return info_plc
+
+
+
 
 
 @app.route('/user/login', methods=['POST'])
@@ -106,23 +129,23 @@ def info(token):
             return jsonify({"status": "error", "message": "Invalid token"}), 403
 
 @app.route('/info/<user_opc_clients>/<token>', methods=['GET'])
-def info(user_opc_clients,token):  
+def info_plc(user_opc_clients,token):  
+    temp_opc_clients = []
+    for opc_client in user_opc_clients:
+        temp_opc_clients.append("Client(opc.tcp://" + opc_client + '/')
+    print(temp_opc_clients)
     ## Check if the token exists in opc_clients
-    user_opc_clients = []
+    info_opc_clients = []
     for opc_client in opc_clients:
-        if token == opc_client[3] and opc_client[1] in user_opc_clients and opc_client[2] == "online":
-
-            
-            
-            
-            user_opc_clients.append([opc_client[1],opc_client[2]])
-        if len(user_opc_clients) > 0:
-            return jsonify({"status": "success", "opc_clients": f"{user_opc_clients}"}), 200
+        if token == opc_client[3] and opc_client[1] in temp_opc_clients and opc_client[2] == "online":
+            info_opc_clients.append = read_plc(opc_client)
+        if len(info_opc_clients) > 0:
+            return jsonify({"status": "success", "opc_clients": f"{info_opc_clients}"}), 200
         else:
             return jsonify({"status": "error", "message": "Invalid token"}), 403
 
 
 if __name__ == "__main__":
-    main()
+    connect_plcs()
     app.run(port=5000, debug=False)
     print(opc_clients)

@@ -69,14 +69,8 @@ paths:
                   message:
                     type: string
                     example: "Invalid credentials"
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  
-  /user/{token}:
+
+  /user/logout/{token}:
     delete:
       tags:
         - user
@@ -96,18 +90,116 @@ paths:
           content:
             application/json:
               schema:
+                type: object
+                properties:   
+                  message:
+                    type: string
+                    example: "Byebye opcUser!"
+                  status:
+                    type: string
+                    example: success
+        '403':
+          description: Logout failed
+          content:
+            application/json:
+              schema:
                 $ref: '#/components/schemas/InvalidToken'
-  
+
+    
+  /info/{token}:
+    get:
+      tags:
+        - info
+      summary: Informs about User's PLCs
+      description: ''
+      operationId: infoPLCs
+      parameters: 
+      - name: token
+        in: path
+        description: Valid token of user's PLCs
+        required: true
+        schema:
+          $ref: '#/components/schemas/Token'
+      responses:
+        '200':
+          description: Infos about PLCs successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PLCs'
+        '403':
+          description: Invalid Token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidToken'
+    
+  /info/{user_opc_clients}/{token}:
+    get:
+      tags:
+        - info
+      summary: Informs about "Schütz" and "Motorschutzschalter" of user's PLCs
+      description: ''
+      operationId: infoPLCsDetails
+      parameters: 
+      - name: user_opc_clients
+        in: path
+        description: User's PLCs connections strings
+        required: true
+        schema:
+          $ref: '#/components/schemas/UserOpcClients'
+      - name: token
+        in: path
+        description: Valid token of user's PLCs
+        required: true
+        schema:
+          $ref: '#/components/schemas/Token'
+      responses:
+        '200':
+          description: Infos about PLCs successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PLCs'
+        '403':
+          description: Invalid Token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidToken'
+    
     
 components:
   schemas:
-    Error:
+  
+    Token:
+      type: string
+      example: 123456
+      
+    InvalidToken:
       type: object
-      properties:
-        status:
-          type: string
+      properties:   
         message:
           type: string
-      required:
-        - status
-        - message
+          example: "Invalid token"
+        status:
+          type: string
+          example: error
+          
+    PLCs:
+      type: object
+      properties:   
+        opc_clients:
+          type: string
+          example: "[[Client(opc.tcp://192.168.178.25:4840/), 'online']]"
+        status:
+          type: string
+          example: success
+          
+    UserOpcClients:
+        type: string
+        example: "[192.168.178.25:4840]"
+
+          
+          
+          
