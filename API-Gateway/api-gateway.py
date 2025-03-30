@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 import asyncio
 import logging
-from pathlib import Path
+import ast
 
 from asyncua import Client
 from asyncua import ua
@@ -57,7 +57,7 @@ def connect_plcs():
     loop.close()
     print(opc_clients)
 
-async def task_read_plc(loop,opc_client):
+async def task_read_plc(opc_client):
     try:
         async with opc_client:
             objects = opc_client.nodes.objects
@@ -68,17 +68,6 @@ async def task_read_plc(loop,opc_client):
     except ua.UaError as exp:
         _logger.error(exp)
   
-def read_plc(opc_client):
-    info_plc = -1,-1
-    loop = asyncio.get_event_loop()
-    loop.set_debug(True)
-    loop.run_until_complete(info_plc = task_read_plc(loop,opc_client))
-    loop.close()
-    print(info_plc)
-    return info_plc
-
-
-
 
 
 @app.route('/user/login', methods=['POST'])
@@ -129,16 +118,22 @@ def info(token):
             return jsonify({"status": "error", "message": "Invalid token"}), 403
 
 @app.route('/info/<user_opc_clients>/<token>', methods=['GET'])
-def info_plc(user_opc_clients,token):  
-    temp_opc_clients = []
-    for opc_client in user_opc_clients:
-        temp_opc_clients.append("Client(opc.tcp://" + opc_client + '/')
-    print(temp_opc_clients)
+async def info_plc(user_opc_clients,token):  
+    print(user_opc_clients)
+    user_opc_clients = ast.literal_eval(user_opc_clients)
+    print(user_opc_clients)
+    for i in range(len(user_opc_clients)):
+        user_opc_clients[i] = "Client(opc.tcp://" + user_opc_clients[i] + '/)'
+    print(user_opc_clients)
+    print(opc_clients[0])
+    print(repr(opc_clients[0][1]))
     ## Check if the token exists in opc_clients
     info_opc_clients = []
     for opc_client in opc_clients:
-        if token == opc_client[3] and opc_client[1] in temp_opc_clients and opc_client[2] == "online":
-            info_opc_clients.append = read_plc(opc_client)
+        if repr(opc_client[1]) in user_opc_clients:
+            print("XXX")
+        if token == opc_client[3] and repr(opc_client[1]) in user_opc_clients and opc_client[2] == "online":
+            info_opc_clients.append(await task_read_plc(opc_client))
         if len(info_opc_clients) > 0:
             return jsonify({"status": "success", "opc_clients": f"{info_opc_clients}"}), 200
         else:
