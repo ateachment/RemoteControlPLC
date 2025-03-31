@@ -160,13 +160,39 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PLCs'
+                $ref: '#/components/schemas/PLCsDetails'
         '403':
           description: Invalid Token
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InvalidToken'
+                $ref: '#/components/schemas/InvalidToken_PLCsOffline_IncorrectlyNamed'
+    
+  /control:
+    post:
+      tags:
+        - command
+      summary: Send command to PLCs
+      description: Start or stops the engine respectivele "Motorschütz"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Control'
+      responses:
+        '200':
+          description: Command to PLCs successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PLCsDetails'
+        '403':
+          description: Invalid Token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidToken_PLCsOffline_IncorrectlyNamed'
     
     
 components:
@@ -181,25 +207,52 @@ components:
       properties:   
         message:
           type: string
-          example: "Invalid token"
+          example: Invalid token
         status:
           type: string
           example: error
+          
+    InvalidToken_PLCsOffline_IncorrectlyNamed:
+      type: object
+      properties:   
+        message:
+          type: string
+          example: Invalid token, PLC(s) offline or incorrectly named
+        status:
+          type: string
+          example: error      
           
     PLCs:
       type: object
       properties:   
         opc_clients:
           type: string
-          example: "[[Client(opc.tcp://192.168.178.25:4840/), 'online']]"
+          example: [['192.168.178.25:4840', 'online']]
+        status:
+          type: string
+          example: success
+          
+    PLCsDetails:
+      type: object
+      properties:   
+        opc_clients:
+          type: string
+          example: [['192.168.178.25:4840', {'Motorschütz': True, 'Motorschutzschalter': True}]]
         status:
           type: string
           example: success
           
     UserOpcClients:
         type: string
-        example: "['192.168.178.25:4840','192.168.178.26:4840']"
-
-          
-          
-          
+        example: ['192.168.178.25:4840','192.168.178.26:4840']
+        
+    Control:
+      type: object
+      properties:
+        token:
+          $ref: '#/components/schemas/Token'
+        user_opc_clients:
+          $ref: '#/components/schemas/UserOpcClients'
+        command:
+          type: string
+          example: start
