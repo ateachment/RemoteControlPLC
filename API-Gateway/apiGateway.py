@@ -38,6 +38,7 @@ def connect_plcs():
                 opc_clients.append([opcUser['username:password'], plc['plc']['ip:port'], status, -1, client])   # i.e. ['opcUser:opcUser123', Client(opc.tcp://192.168.178.25:4840/), 'online', -1]
             except:
                 client.disconnect()
+    print(opc_clients)
                             
 
 

@@ -1,4 +1,3 @@
-#from opcua import *
 from asyncua.sync import Client, ua
 import settings
 

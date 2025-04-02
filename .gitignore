@@ -19,3 +19,4 @@
 **/*.p12
 
 **/settings.py
+API-Gateway/.vscode/settings.json
