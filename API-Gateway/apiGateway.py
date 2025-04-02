@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import ast
 
 #from opcua import *
 from asyncua.sync import Client, ua
@@ -131,7 +130,7 @@ def control_plc():
     print(data)
     ## Extract data from the request
     print(data.get('user_opc_clients'))
-    user_opc_clients = ast.literal_eval(str(data.get('user_opc_clients'))) # create list
+    user_opc_clients = eval(str(data.get('user_opc_clients'))) # create list
     print(user_opc_clients)
     command = data.get('command')
     token = data.get('token')
