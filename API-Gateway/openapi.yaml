@@ -244,7 +244,7 @@ components:
           
     UserOpcClients:
         type: string
-        example: ['192.168.178.25:4840','192.168.178.26:4840']
+        example: ['192.168.178.25:4840','172.17.10.19:4840']
         
     Control:
       type: object

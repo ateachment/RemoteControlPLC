@@ -1,8 +1,9 @@
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import ast
 
-from opcua import *
+#from opcua import *
+from asyncua.sync import Client, ua
 
 import secrets
 import settings
@@ -57,9 +58,9 @@ def write_plc(client, command):
         WebStartNode = client.get_node('ns=4;i=3')
         WebStopNode = client.get_node('ns=4;i=4')
         if command == "start":
-            WebStartNode.set_attribute(ua.AttributeIds.Value, ua.DataValue(True))
+            WebStartNode.write_value(ua.DataValue(ua.Variant(True, ua.VariantType.Boolean)))
         if command == "stop":
-            WebStopNode.set_attribute(ua.AttributeIds.Value, ua.DataValue(False))  
+            WebStopNode.write_value(ua.DataValue(ua.Variant(False, ua.VariantType.Boolean)))
         return read_plc(client)
     except:
         client.disconnect()
@@ -127,8 +128,10 @@ def info_plc(user_opc_clients,token):
 @app.route('/control', methods=['POST'])
 def control_plc():  
     data = request.get_json()
+    print(data)
     ## Extract data from the request
-    user_opc_clients = ast.literal_eval(data.get('user_opc_clients')) # create list
+    print(data.get('user_opc_clients'))
+    user_opc_clients = ast.literal_eval(str(data.get('user_opc_clients'))) # create list
     print(user_opc_clients)
     command = data.get('command')
     token = data.get('token')

@@ -1,8 +1,9 @@
-from opcua import *
+#from opcua import *
+from asyncua.sync import Client, ua
 import settings
 
 #Benutzer verbinden
-client = Client(settings.SERVER_ADDRESS,timeout=8)
+client = Client(settings.SERVER_ADDRESS,timeout=20)
 client.set_security_string(settings.SECURITY_STRING)
 
 try:
@@ -14,10 +15,14 @@ try:
     MotorschützNode = client.get_node('ns=4;i=5')
     MotorschutzschalterNode = client.get_node('ns=4;i=6')
 
+    # Deklaration von Unified Architekture - Variablen
+    on = ua.DataValue(ua.Variant(True, ua.VariantType.Boolean))
+    off = ua.DataValue(ua.Variant(False, ua.VariantType.Boolean))
+    
     # Motorschütz EIN
-    WebStartNode.set_attribute(ua.AttributeIds.Value, ua.DataValue(True))
+    WebStartNode.write_value(on)
     # Motorschütz AUS
-    #WebStopNode.set_attribute(ua.AttributeIds.Value, ua.DataValue(False))  
+    WebStopNode.write_value(off)
 
     WebStart = WebStartNode.get_value()
     WebStop = WebStopNode.get_value()
