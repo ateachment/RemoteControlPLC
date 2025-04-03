@@ -109,7 +109,7 @@ def info(token):
         if token == opc_client[3]:
             user_opc_clients.append([opc_client[1],opc_client[2]])   # add opc_client to list
         if len(user_opc_clients) > 0:
-            return jsonify({"status": "success", "opc_clients": f"{user_opc_clients}"}), 200
+            return jsonify({"status": "success", "opc_clients": user_opc_clients}), 200
         else:
             return jsonify({"status": "error", "message": "Invalid token"}), 403
 
@@ -144,7 +144,7 @@ def control_plc():
         if token == opc_client[3] and opc_client[1] in user_opc_clients and opc_client[2] == "online":
             info_opc_clients.append([opc_client[1], write_plc(opc_client[4], command)])
         if len(info_opc_clients) > 0:
-            return jsonify({"status": "success", "opc_clients": f"{info_opc_clients}"})
+            return jsonify({"status": "success", "opc_clients": info_opc_clients})
         else:
             return jsonify({"status": "error", "message": "Invalid token, PLC(s) offline or incorrectly named"}), 403
 
