@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-#from opcua import *
 from asyncua.sync import Client, ua
 
 import secrets
@@ -13,16 +12,17 @@ if settings.DEBUG_MODE:
     CORS(app)                               # make cross-origin AJAX possible because of OPENAPI swagger
 
 
-## Generate a random secret key for session management
+## generate a random secret key for session management
 def generateToken():
     if settings.DEBUG_MODE:
         return "123456"                     # testing environment
     else:
         return secrets.token_urlsafe(64)    # production
 
-
+## data of ppc_clients (PLCs)
 opc_clients = []
 
+## connect PLCs if possible at program start
 def connect_plcs():
     for opcUser in settings.PLC_CONFIGS['opcUsers']:
         for plc in opcUser['plcs']:
@@ -40,8 +40,7 @@ def connect_plcs():
                 client.disconnect()
     print(opc_clients)
                             
-
-
+## read nodes of plc
 def read_plc(client):
     try:
         MotorschützNode = client.get_node('ns=4;i=5')
@@ -52,7 +51,7 @@ def read_plc(client):
     except:
         client.disconnect()
 
-
+## write data to plc 
 def write_plc(client, command):
     try:
         WebStartNode = client.get_node('ns=4;i=3')
@@ -65,6 +64,7 @@ def write_plc(client, command):
     except:
         client.disconnect()
   
+## routes of flask webserver
 
 @app.route('/user/login', methods=['POST'])
 def login():
@@ -101,6 +101,7 @@ def logout(token):
         else:
             return jsonify({"status": "error", "message": "Invalid token"}), 403
 
+## get info about which PLC of an user is registered and of online or not
 @app.route('/info/<token>', methods=['GET'])
 def info(token):  
     ## Check if the token exists in opc_clients
@@ -113,6 +114,7 @@ def info(token):
         else:
             return jsonify({"status": "error", "message": "Invalid token"}), 403
 
+## get info about status PLC(s) of an user
 @app.route('/info/<user_opc_clients>/<token>', methods=['GET'])
 def info_plc(user_opc_clients,token):  
     ## Check user_opc_clients
@@ -125,17 +127,18 @@ def info_plc(user_opc_clients,token):
         else:
             return jsonify({"status": "error", "message": "Invalid token, PLC(s) offline or incorrectly named"}), 403
 
+## give command to PLC(s)
 @app.route('/control', methods=['POST'])
 def control_plc():  
     data = request.get_json()
     print(data)
-    ## Extract data from the request
+    # extract data from the request
     print(data.get('user_opc_clients'))
     user_opc_clients = eval(str(data.get('user_opc_clients'))) # create list
     print(user_opc_clients)
     command = data.get('command')
     token = data.get('token')
-    ## Check user_opc_clients
+    # check user_opc_clients
     info_opc_clients = []
     for opc_client in opc_clients:
         print(opc_client)
@@ -148,6 +151,7 @@ def control_plc():
         else:
             return jsonify({"status": "error", "message": "Invalid token, PLC(s) offline or incorrectly named"}), 403
 
+## main program
 if __name__ == "__main__":
     connect_plcs()
     app.run(port=5000, debug=False)
