@@ -2,6 +2,8 @@
 
 import os
 
+ONE_OF_YOUR_PLC_IPs = 'ONE_OF_YOUR_PLC_IPs'         # only needed vor automated tests
+
 PLC_CONFIGS = { 
     'opcUsers': [{
         'username:password':'YOUR_OPC_USER:YOUR_OPC_USER_PASSWORD',

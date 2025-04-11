@@ -1,8 +1,9 @@
 import pytest
 from apiGateway import *
-from flask import jsonify
 import json
 import time
+
+import settings
 
 ## PLCs verbinden ############################################################################
 
@@ -55,14 +56,14 @@ def test_info_success():
         response = app.test_client().get('/info/' + generateToken())
         assert response.status_code == 200
         jsonData = json.loads(response.data.decode('utf-8'))
-        assert jsonData == {"opc_clients": [["172.17.10.19:4840","online"]], "status": "success"}
+        assert jsonData == {"opc_clients": [[settings.ONE_OF_YOUR_PLC_IPs + ":4840","online"]], "status": "success"}
 
 def test_control_fail():
     data =  {
                 "token": "wrongToken",
                 "user_opc_clients": [
-                    "192.168.178.25:4840",
-                    "172.17.16.19:4840"
+                    settings.ONE_OF_YOUR_PLC_IPs + ":4840",
+                    "172.17.16.255:4840"
                 ],
                 "command": "start"
             }
@@ -76,8 +77,8 @@ def test_control_successON():
     data =  {
                 "token": "123456",
                 "user_opc_clients": [
-                    "192.168.178.25:4840",
-                    "172.17.10.19:4840"
+                    settings.ONE_OF_YOUR_PLC_IPs + ":4840",
+                    "172.17.10.255:4840"
                 ],
                 "command": "start"
             }
@@ -85,14 +86,14 @@ def test_control_successON():
         response = app.test_client().post('/control', json=data)
         assert response.status_code == 200
         jsonData = json.loads(response.data.decode('utf-8'))
-        assert jsonData == {"opc_clients": [["172.17.10.19:4840", { "Motorschütz": True, "Motorschutzschalter": True }]], "status": "success"}
+        assert jsonData == {"opc_clients": [[settings.ONE_OF_YOUR_PLC_IPs + ":4840", { "Motorschütz": True, "Motorschutzschalter": True }]], "status": "success"}
 
 def test_control_successOFF():
     data =  {
                 "token": "123456",
                 "user_opc_clients": [
-                    "192.168.178.25:4840",
-                    "172.17.10.19:4840"
+                    settings.ONE_OF_YOUR_PLC_IPs + ":4840",
+                    "172.17.10.255:4840"
                 ],
                 "command": "stop"
             }
@@ -100,7 +101,7 @@ def test_control_successOFF():
         response = app.test_client().post('/control', json=data)
         assert response.status_code == 200
         jsonData = json.loads(response.data.decode('utf-8'))
-        assert jsonData == {"opc_clients": [["172.17.10.19:4840", { "Motorschütz": False, "Motorschutzschalter": True }]], "status": "success"}
+        assert jsonData == {"opc_clients": [[settings.ONE_OF_YOUR_PLC_IPs + ":4840", { "Motorschütz": False, "Motorschutzschalter": True }]], "status": "success"}
 
 
 
