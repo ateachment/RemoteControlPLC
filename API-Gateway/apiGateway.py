@@ -26,17 +26,18 @@ opc_clients = []
 def connect_plcs():
     for opcUser in settings.PLC_CONFIGS['opcUsers']:
         for plc in opcUser['plcs']:
-            status = "offline"
             server_address = "opc.tcp://" + opcUser['username:password'] + '@' + plc['plc']['ip:port'] 
             security_string = plc['plc']['SECURITY_STRING']
             print(server_address, security_string)
-            client = Client(server_address, timeout=80)
-            client.set_security_string(security_string)
             try:
-                client.connect()
                 status = "online"
+                client = Client(server_address, timeout=80)
+                client.set_security_string(security_string)
+                client.connect()
                 opc_clients.append([opcUser['username:password'], plc['plc']['ip:port'], status, -1, client])   # i.e. ['opcUser:opcUser123', Client(opc.tcp://192.168.178.25:4840/), 'online', -1]
             except:
+                status = "offline"
+                opc_clients.append([opcUser['username:password'], plc['plc']['ip:port'], status, -1, client])   # i.e. ['opcUser:opcUser123', Client(opc.tcp://192.168.178.25:4840/), 'online', -1]
                 client.disconnect()
     print(opc_clients)
                             
@@ -94,7 +95,7 @@ def logout(token):
         loggedON = True
         if token == opc_clients[i][3]:
             loggedON = False
-            opc_clients[i][3] = -1    # put invalid token in opc client list
+            opc_clients[i][3] = -1             # put invalid token in opc client list
             print(opc_clients)
         if loggedON == False:
             return jsonify({"status": "success", "message": f"Byebye opcUser!"}), 200
@@ -142,8 +143,6 @@ def control_plc():
     info_opc_clients = []
     for opc_client in opc_clients:
         print(opc_client)
-        if opc_client in user_opc_clients:
-            print("xxxx")
         if token == opc_client[3] and opc_client[1] in user_opc_clients and opc_client[2] == "online":
             info_opc_clients.append([opc_client[1], write_plc(opc_client[4], command)])
         if len(info_opc_clients) > 0:

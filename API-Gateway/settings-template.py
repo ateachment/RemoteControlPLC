@@ -16,7 +16,7 @@ PLC_CONFIGS = {
             'SECURITY_STRING':'Basic256Sha256,SignAndEncrypt,YOUR_CLIENT_CERT_FILE2.pem,YOUR_CLIENT_KEY_FILE2.pem',
             'ip:port': 'YOUR_PLC_IP2:OPC_PORT2'
             }}
-        ],
+        ]}, {
         'username:password':'YOUR_OPC_USER2:YOUR_OPC_USER_PASSWORD2',
         'plcs': [{
             'plc': {
